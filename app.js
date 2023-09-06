@@ -14,11 +14,13 @@ const httpStatusText = require("./utils/http_status_text");
 const errorHandlerMiddleware = require("./middleware/error_handler");
 const notFoundMiddleware = require("./middleware/not_found");
 
+const verifyToken = require("./middleware/verify_token");
+
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/v1/courses", coursesRouter);
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/courses", verifyToken, coursesRouter);
+app.use("/api/v1/users", verifyToken, userRouter);
 app.use("/api/v1/auth", authRouter);
 
 app.use("*", notFoundMiddleware);

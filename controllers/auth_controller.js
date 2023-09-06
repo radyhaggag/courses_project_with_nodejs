@@ -6,6 +6,9 @@ const CustomError = require("../utils/custom_error");
 
 const bcrypt = require("bcryptjs");
 
+const jwt = require("jsonwebtoken");
+const generateJWT = require("../utils/jwt_generator");
+
 const register = asyncWrapper(async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
@@ -20,7 +23,6 @@ const register = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  // Password Hashing
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = new User({
@@ -29,12 +31,18 @@ const register = asyncWrapper(async (req, res, next) => {
     email,
     password: hashedPassword,
   });
+
   await user.save();
+
+  // Generate Token
+  const token = generateJWT({ email: user.email, id: user._id });
+  user.token = token;
 
   return res
     .status(201)
     .json({ status: httpStatusText.SUCCESS, data: { user } });
 });
+
 const login = asyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -63,9 +71,14 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
+  const token = generateJWT({ email: user.email, id: user._id });
+
   return res.json({
     status: httpStatusText.SUCCESS,
     msg: "User login successful",
+    data: {
+      token: token,
+    },
   });
 });
 
