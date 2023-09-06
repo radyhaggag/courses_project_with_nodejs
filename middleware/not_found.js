@@ -1,4 +1,4 @@
-const httpStatusText = require("./utils/http_status_text");
+const httpStatusText = require("../utils/http_status_text");
 
 const notFoundMiddleware = (req, res, next) => {
   return res.status(404).json({

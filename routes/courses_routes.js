@@ -11,24 +11,9 @@ const {
   deleteCourse,
 } = require("../controllers/courses_controller");
 
-router
-  .route("/")
-  .get(getAllCourses)
-  .post(
-    [
-      body("name")
-        .notEmpty()
-        .withMessage("name is required")
-        .isLength({ min: 2 })
-        .withMessage("name is at least 2 characters"),
-      body("price")
-        .notEmpty()
-        .withMessage("price is required")
-        .isInt()
-        .withMessage("price must be a number"),
-    ],
-    createCourse
-  );
+const validationSchema = require("../middleware/validation_schema");
+
+router.route("/").get(getAllCourses).post(validationSchema(), createCourse);
 
 router
   .route("/:courseId")
