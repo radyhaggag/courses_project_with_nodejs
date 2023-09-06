@@ -9,6 +9,7 @@ const cors = require("cors");
 
 const coursesRouter = require("./routes/courses_routes");
 const userRouter = require("./routes/user_routes");
+const authRouter = require("./routes/auth_routes");
 const httpStatusText = require("./utils/http_status_text");
 const errorHandlerMiddleware = require("./middleware/error_handler");
 const notFoundMiddleware = require("./middleware/not_found");
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/api/v1/courses", coursesRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.use("*", notFoundMiddleware);
 

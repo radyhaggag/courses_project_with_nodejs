@@ -39,7 +39,7 @@ const createCourse = asyncWrapper(async (req, res, next) => {
   }
 
   const course = await Course.create({ ...req.body });
-  return res.json({
+  return res.status(201).json({
     status: httpStatusText.SUCCESS,
     data: { course },
   });
