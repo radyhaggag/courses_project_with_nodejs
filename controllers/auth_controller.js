@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const generateJWT = require("../utils/jwt_generator");
 
 const register = asyncWrapper(async (req, res, next) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, role } = req.body;
 
   const oldUser = await User.findOne({ email: email });
 
@@ -30,12 +30,13 @@ const register = asyncWrapper(async (req, res, next) => {
     lastName,
     email,
     password: hashedPassword,
+    role: role,
   });
 
   await user.save();
 
   // Generate Token
-  const token = generateJWT({ email: user.email, id: user._id });
+  const token = generateJWT({ email: user.email, id: user._id, role: role });
   user.token = token;
 
   return res
@@ -71,7 +72,11 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  const token = generateJWT({ email: user.email, id: user._id });
+  const token = generateJWT({
+    email: user.email,
+    id: user._id,
+    role: user.role,
+  });
 
   return res.json({
     status: httpStatusText.SUCCESS,
