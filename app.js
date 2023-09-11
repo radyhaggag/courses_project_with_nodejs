@@ -13,9 +13,15 @@ const authRouter = require("./routes/auth_routes");
 const httpStatusText = require("./utils/http_status_text");
 const errorHandlerMiddleware = require("./middleware/error_handler");
 const notFoundMiddleware = require("./middleware/not_found");
+const path = require("path");
 
 const verifyToken = require("./middleware/verify_token");
 
+app.use((req, res, next) => {
+  console.log(req.url);
+  next();
+});
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.json());
 
